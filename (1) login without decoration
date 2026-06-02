@@ -13,7 +13,8 @@
         <form id="loginForm">
             <div class="input-group">
                 <label>Имя пользователя или Email</label>
-                
+                <input type="password" id="loginPassword" placeholder="Введите Имя или Email">
+                <div class="error" id="loginNameError"></div>
                 </div>
             </div>
             
@@ -22,18 +23,16 @@
                 <input type="password" id="loginPassword" placeholder="Введите пароль">
                 <div class="error" id="loginPasswordError"></div>
             </div>
-
+            
+            <div class="error" id="termsError" style="margin-top: -10px; margin-bottom: 20px;"></div> 
             <button type="submit">Войти</button>
         </form>
 
         <div class="login-link">
             Ещё нет аккаунта? 
-            <!-- Ссылка ведет на второй файл регистрации -->
             <a href="register.html" id="showRegisterLink">Зарегистрироваться</a>
         </div>
     </div>
 
 </body>
 </html>
-
-
