@@ -1,0 +1,48 @@
+  <div class="register-card">
+        <h2>Регистрация</h2>
+        <div class="subtitle">Создайте новый аккаунт</div>
+
+        <form id="registerForm">
+            <div class="input-group">
+                <label>Имя пользователя</label>
+                <input type="text" id="username" placeholder="Введите имя">
+                <div class="error" id="usernameError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="example@mail.com">
+                <div class="error" id="emailError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Пароль</label>
+                <input type="password" id="password" placeholder="Минимум 6 символов">
+                <div class="error" id="passwordError"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Подтверждение пароля</label>
+                <input type="password" id="confirmPassword" placeholder="Повторите пароль">
+                <div class="error" id="confirmError"></div>
+            </div>
+
+            <div class="checkbox">
+                <input type="checkbox" id="terms">
+                <label>Я согласен с условиями использования</label>
+            </div>
+            <div class="error" id="termsError" style="margin-top: -10px;"></div>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+        <div class="login-link">
+            Уже есть аккаунт? <a href="#" id="loginLink">Войти</a>
+        </div>
+    </div>
+
+    <div id="toast" class="success-toast">✅ Регистрация успешна!</div>
+
+    <script>
+</body>
+</html>
