@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blist — Мессенджер</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0f19; /* Глубокий темный фон Blist */
+            color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Главный контейнер на весь экран для ПК */
+        .messenger-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            background: #111827; /* Фон карточек Blist */
+            position: relative;
+        }
+
+        /* --- ЛЕВАЯ ПАНЕЛЬ (СПИСКИ, ПОИСК, НАВИГАЦИЯ) --- */
+        .sidebar {
+            width: 350px;
+            min-width: 320px;
+            max-width: 450px;
+            height: 100%;
+            border-right: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #111827;
+        }
+
+        /* Поиск сверху боковой панели */
+        .header-search {
+            padding: 16px;
+            border-bottom: 1px solid #1f2937;
+            background-color: #111827;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #0b0f19;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: #4b5563;
+        }
+
+        /* Контейнер для экранов внутри сайдбара */
+        .sidebar-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 8px 0 95px 0; /* Отступ под плавающий пузырь */
+            background-color: #111827;
+            display: none !important;
+        }
+
+        .app-screen.screen-active {
+            display: block !important;
+        }
+
+        /* Скроллбар для списков */
+        .app-screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app-screen::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 2px;
+        }
+
+        /* Элементы чата (с вашими округлениями при наведении) */
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 2px 8px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-radius 0.2s ease;
+        }
+
+        .chat-item:hover {
+            background-color: #1f2937;
+            border-radius: 12px;
+        }
+
+        .chat-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #374151;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #60a5fa;
+            font-size: 16px;
+            border: 1px solid #374151;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .chat-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #9ca3af;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .chat-message-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-last-message {
+            font-size: 13px;
+            color: #9ca3af;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 8px;
+        }
+
+        .chat-badge {
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* --- ПУЗЫРЬ НАВИГАЦИИ (ПЛАВАЕТ ВНУТРИ САЙДБАРА) --- */
+        .bottom-nav-container {
+            position: absolute;
+            bottom: 16px;
+            left: 12px;
+            right: 12px;
+            z-index: 10;
+        }
+
+        .bottom-nav-bubble {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            padding: 10px 6px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            width: 23%;
+            padding: 6px 0;
+            border-radius: 20px;
+        }
+
+        .nav-item.active {
+            color: #60a5fa;
+            background-color: rgba(59, 130, 246, 0.1); 
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #ffffff;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        /* --- ПРАВАЯ ПАНЕЛЬ (ОКНО ЧАТА ПО УМОЛЧАНИЮ) --- */
+        .chat-view {
+            flex: 1;
+            background-color: #0b0f19; /* Глубокий фон Blist для рабочей зоны */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-placeholder {
+            text-align: center;
+            color: #4b5563;
+        }
+
+        .placeholder-bubble {
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #9ca3af;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="messenger-container">
+        
+        <!-- ЛЕВАЯ КОЛОНКА -->
+        <div class="sidebar">
+            
+            <!-- Поиск -->
+            <div class="header-search">
+                <div class="search-wrapper">
+                    <input type="text" class="search-input" placeholder="Поиск...">
+                </div>
+            </div>
+
+            <!-- Внутренний контейнер экранов -->
+            <div class="sidebar-content">
+                
+                <!-- ЭКРАН 1: ЧАТЫ -->
+                <div id="chatsScreen" class="app-screen screen-active">
+                    <div class="chat-item">
+                        <div class="chat-avatar">АП</div>
+                        <div class="chat-info">
+                            <div class="chat-header">
+                                <span class="chat-name">Александр Петров</span>
+                                <span class="chat-time">17:45</span>
+                            </div>
+                            <div class="chat-message-row">
+                                <span class="chat-last-message">Привет! Проект Blist готов к запуску?</span>
+                                <span class="chat-badge">2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar" style="color: #10b981;">ДК</div>
+                        <div class="chat-info">
+                            <div class="chat-header">
+                                <span class="chat-name">Дизайн-команда</span>
+                                <span class="chat-time">15:12</span>
+                            </div>
+                            <div class="chat-message-row">
+                                <span class="chat-last-message">Выслали новые макеты для страницы профиля</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar" style="color: #f59e0b;">ИИ</div>
+                        <div class="chat-info">
+                            <div class="chat-header">
+                                <span class="chat-name">Иван Иванов</span>
+                                <span class="chat-time">Вчера</span>
+                            </div>
+                            <div class="chat-message-row">
+                                <span class="chat-last-message">Договорились, созвонимся позже.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ЭКРАН 2: КОНТАКТЫ -->
+                <div id="contactsScreen" class="app-screen">
+                    <!-- Пустой экран с фоном -->
+                </div>
+
+                <!-- ЭКРАН 3: НАСТРОЙКИ -->
+                <div id="settingsScreen" class="app-screen">
+                    <!-- Пустой экран с фоном -->
+                </div>
+
+                <!-- ЭКРАН 4: ПРОФИЛЬ -->
+                <div id="profileScreen" class="app-screen">
+                    <!-- Пустой экран с фоном -->
+                </div>
+
+            </div> <!-- /sidebar-content -->
+
+            <!-- Навигационный пузырь внизу левой панели -->
+            <div class="bottom-nav-container">
+                <div class="bottom-nav-bubble">
+                    <button class="nav-item active" data-screen="chatsScreen">
+                        <span class="nav-icon">💬</span>
+                        <span>Чаты</span>
+                    </button>
+                    <button class="nav-item" data-screen="contactsScreen">
+                        <span class="nav-icon">📖</span>
+                        <span>Контакты</span>
+                    </button>
+                    <button class="nav-item" data-screen="settingsScreen">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Настройки</span>
+                    </button>
+                    <button class="nav-item" data-screen="profileScreen">
+                        <span class="nav-icon">👤</span>
+                        <span>Профиль</span>
+                    </button>
+                </div>
+            </div>
+
+        </div> <!-- /sidebar -->
+
+        <!-- ПРАВАЯ КОЛОНКА (ОКНО ОТКРЫТОГО ЧАТА) -->
+        <div class="chat-view">
+            <div class="chat-placeholder">
+                <div class="placeholder-bubble">Выберите чат, чтобы начать общение</div>
+            </div>
+        </div>
+
+    </div> <!-- /messenger-container -->
+
+    <!-- СКРИПТ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК -->
+    <script>
+        const navButtons = document.querySelectorAll('.nav-item');
+        const appScreens = document.querySelectorAll('.app-screen');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 1. Меняем активную кнопку
+                document.querySelector('.nav-item.active').classList.remove('active');
+                button.classList.add('active');
+
+                // 2. Скрываем все экраны в сайдбаре
+                appScreens.forEach(screen => {
+                    screen.classList.remove('screen-active');
+                });
+
+                // 3. Показываем нужный экран по дата-атрибуту
+                const targetScreenId = button.getAttribute('data-screen');
+                document.getElementById(targetScreenId).classList.add('screen-active');
+            });
+        });
+    </script>
+
+</body>
+</html>
+
