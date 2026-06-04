@@ -21,18 +21,46 @@
             color: #f0f4f8;
         }
 
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .brand img {
+            width: 256px;
+            height: 256px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #60a5fa;
+            letter-spacing: 1px;
+        }
+
         .register-card {
             background: #111827;
             padding: 40px;
             border-radius: 12px;
             width: 100%;
-            max-width: 400px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
             border: 1px solid #1f2937;
         }
 
         h2 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
             margin-bottom: 8px;
             color: #ffffff;
@@ -134,30 +162,35 @@
 </head>
 <body>
 
-    <div class="register-card" id="loginCard">
-        <h2>Вход в аккаунт</h2>
-        <div class="subtitle">Войдите в свою учетную запись</div>
-        
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="loginName">Имя пользователя или Email</label>
-                <input type="text" id="loginName" placeholder="Введите Имя или Email">
-                <div class="error" id="loginNameError"></div>
+    <div class="container">
+        <div class="brand">
+            <img src="https://sun9-10.userapi.com/s/v1/ig2/CA7Oe8uekixg-HGqvlOntSUbuYkRZuEyhEmoyJ6kuH5PuSs6vVvMN9T-4RT0MF2dCfPSxnuomoviPUO3cxmuj64y.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1024x1024&from=bu&u=UBrDe4KqI9XXEnUz5elBKt6jeTndCSZ_5mdTq-OK2Kc&cs=1024x0" alt="Blist Logo">
+            <span class="brand-name">Blist</span>
+        </div>
+
+        <div class="register-card" id="loginCard">
+            <h2>Вход в аккаунт</h2>
+            <div class="subtitle">Войдите в свою учетную запись</div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="loginName">Имя пользователя или Email</label>
+                    <input type="text" id="loginName" placeholder="Введите Имя или Email">
+                    <div class="error" id="loginNameError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите пароль">
+                    <div class="error" id="loginPasswordError"></div>
+                </div>
+                
+                <button type="submit">Войти</button>
+            </form>
+            
+            <div class="login-link">
+                Ещё нет аккаунта? <a href="register.html" id="showRegisterLink">Зарегистрироваться</a>
             </div>
-            
-            <div class="input-group">
-                <label for="loginPassword">Пароль</label>
-                <input type="password" id="loginPassword" placeholder="Введите пароль">
-                <div class="error" id="loginPasswordError"></div>
-            </div>
-            
-            <div class="error" id="termsError" style="margin-top: -10px; margin-bottom: 20px;"></div>
-            
-            <button type="submit">Войти</button>
-        </form>
-        
-        <div class="login-link">
-            Ещё нет аккаунта? <a href="register.html" id="showRegisterLink">Зарегистрироваться</a>
         </div>
     </div>
 
