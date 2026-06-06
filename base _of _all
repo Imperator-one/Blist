@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blist</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        .messenger-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            background: #111827;
+            position: relative;
+        }
+        .sidebar {
+            width: 350px;
+            min-width: 320px;
+            max-width: 450px;
+            height: 100%;
+            border-right: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #111827;
+        }
+        .header-search {
+            padding: 16px;
+            border-bottom: 1px solid #1f2937;
+            background-color: #111827;
+            z-index: 2;
+        }
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 36px 10px 16px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #0b0f19;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        .search-input::placeholder { color: #4b5563; }
+        .search-clear-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            transition: color 0.2s ease;
+        }
+        .search-clear-btn:hover { color: #ffffff; }
+        .sidebar-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+                .app-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 8px 0 95px 0;
+            background-color: #111827;
+            display: none !important;
+        }
+        .app-screen.screen-active { display: block !important; }
+        .app-screen::-webkit-scrollbar { width: 4px; }
+        .app-screen::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+        .chat-item { display: flex; align-items: center; padding: 12px 16px; margin: 2px 8px; border-radius: 0; cursor: pointer; transition: background-color 0.2s ease, border-radius 0.2s ease; }
+        .chat-item:hover, .chat-item.active { background-color: #1f2937; border-radius: 12px; }
+        .chat-avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #374151; margin-right: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #60a5fa; font-size: 16px; border: 1px solid #374151; }
+        .chat-info { flex: 1; min-width: 0; }
+        .chat-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+        .chat-name { font-size: 15px; font-weight: 600; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-time { font-size: 12px; color: #9ca3af; flex-shrink: 0; margin-left: 8px; }
+        .chat-message-row { display: flex; justify-content: space-between; align-items: center; }
+        .chat-last-message { font-size: 13px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 8px; }
+        .chat-badge { background-color: #3b82f6; color: #ffffff; font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+        .screen-placeholder { padding: 20px; color: #9ca3af; }
+        .screen-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 16px; padding-left: 8px; }
+        .settings-item { padding: 14px 16px; background: #1f2937; margin: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+        .bottom-nav-container { position: absolute; bottom: 16px; left: 12px; right: 12px; z-index: 10; }
+        .bottom-nav-bubble { display: flex; justify-content: space-around; align-items: center; background-color: #1f2937; border: 1px solid #374151; padding: 10px 6px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; text-decoration: none; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; background: none; border: none; width: 23%; padding: 6px 0; border-radius: 20px; }
+        .nav-item.active { color: #60a5fa; background-color: rgba(59, 130, 246, 0.1); }
+        .nav-item:hover:not(.active) { color: #ffffff; }
+        .nav-icon { font-size: 18px; margin-bottom: 2px; }
+                .chat-view { flex: 1; background-color: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .chat-placeholder { text-align: center; color: #4b5563; }
+        .placeholder-bubble { background-color: #111827; border: 1px solid #1f2937; padding: 8px 16px; border-radius: 20px; font-size: 14px; color: #9ca3af; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        .chat-main-window { width: 100%; height: 100%; display: none; flex-direction: column; }
+        .chat-main-window.active { display: flex; }
+        .chat-view-header { height: 65px; border-bottom: 1px solid #1f2937; background-color: #111827; display: flex; align-items: center; padding: 0 20px; }
+        .header-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #374151; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #60a5fa; margin-right: 12px; }
+        .header-user-info .header-name { font-weight: 600; font-size: 15px; color: #fff; }
+        .header-user-info .header-status { font-size: 12px; color: #10b981; }
+        .chat-messages-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message-bubble { max-width: 60%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .message-bubble.incoming { background-color: #1f2937; color: #f0f4f8; align-self: flex-start; border-top-left-radius: 4px; }
+        .message-bubble.outgoing { background-color: #3b82f6; color: #ffffff; align-self: flex-end; border-top-right-radius: 4px; }
+        
+        /* Стили для картинок и карточек файлов */
+        .message-media { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 4px; display: block; }
+        .message-file-block { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+        .file-icon { font-size: 24px; }
+        .file-meta { display: flex; flex-direction: column; }
+        .file-name { font-weight: 600; font-size: 13px; color: #fff; }
+        .file-size { font-size: 11px; color: #9ca3af; }
+
+        .chat-view-footer { padding: 16px 20px; background-color: #111827; border-top: 1px solid #1f2937; display: flex; align-items: center; gap: 12px; position: relative; }
+        .message-input { flex: 1; padding: 12px 16px; background-color: #1f2937; border: 1px solid #374151; border-radius: 24px; color: #fff; font-size: 14px; outline: none; }
+        .message-input:focus { border-color: #3b82f6; }
+        .action-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #9ca3af; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; transition: all 0.2s; }
+        .action-icon-btn:hover { color: #ffffff; background-color: #1f2937; }
+        .send-btn { background-color: #3b82f6; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background 0.2s; flex-shrink: 0; }
+        .send-btn:hover { background-color: #2563eb; }
+        .emoji-picker { position: absolute; bottom: 75px; left: 20px; width: 280px; height: 200px; background-color: #1f2937; border: 1px solid #374151; border-radius: 12px; display: none; grid-template-columns: repeat(6, 1fr); padding: 10px; gap: 8px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
+        .emoji-picker.show { display: grid; }
+        .emoji-btn { background: none; border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: background 0.2s; }
+        .emoji-btn:hover { background-color: #374151; }
+        .search-results-container { padding: 8px 0; }
+        .search-divider { padding: 12px 16px 4px 16px; font-size: 12px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
+        .search-divider::after { content: ''; flex: 1; height: 1px; background-color: #1f2937; }
+        .no-results { padding: 20px; text-align: center; color: #4b5563; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="messenger-container">
+        <div class="sidebar">
+            <div class="header-search">
+                <div class="search-wrapper">
+                    <input type="text" class="search-input" placeholder="Поиск среди чатов...">
+                    <button class="search-clear-btn" id="searchClearBtn">✕</button>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <div id="chatsScreen" class="app-screen screen-active">
+                    <div class="chat-item" data-username="Александр Петров" data-avatar="АП" data-color="#60a5fa">
+                        <div class="chat-avatar">АП</div>
+                        <div class="chat-info">
+                            <div class="chat-header"><span class="chat-name">Александр Петров</span><span class="chat-time">17:45</span></div>
+                            <div class="chat-message-row"><span class="chat-last-message">Привет! Проект Blist готов к запуску?</span><span class="chat-badge">2</span></div>
+                        </div>
+                    </div>
+                    <div class="chat-item" data-username="Дизайн-команда" data-avatar="ДК" data-color="#10b981">
+                        <div class="chat-avatar" style="color: #10b981;">ДК</div>
+                        <div class="chat-info">
+                            <div class="chat-header"><span class="chat-name">Дизайн-команда</span><span class="chat-time">15:12</span></div>
+                            <div class="chat-message-row"><span class="chat-last-message">Выслали новые макеты для страницы профиля</span></div>
+                        </div>
+                    </div>
+                    <div class="chat-item" data-username="Иван Иванов" data-avatar="ИИ" data-color="#f59e0b">
+                        <div class="chat-avatar" style="color: #f59e0b;">ИИ</div>
+                        <div class="chat-info">
+                            <div class="chat-header"><span class="chat-name">Иван Иванов</span><span class="chat-time">Вчера</span></div>
+                            <div class="chat-message-row"><span class="chat-last-message">Договорились, созвонимся позже.</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contactsScreen" class="app-screen">
+                    <div class="screen-title">Контакты</div>
+                    <div class="chat-item"><div class="chat-avatar">АП</div><div class="chat-info"><div class="chat-name">Александр Петров</div></div></div>
+                    <div class="chat-item"><div class="chat-avatar" style="color: #f59e0b;">ИИ</div><div class="chat-info"><div class="chat-name">Иван Иванов</div></div></div>
+                </div>
+                <div id="settingsScreen" class="app-screen">
+                    <div class="screen-title">Настройки</div>
+                    <div class="settings-item">🔔 Уведомления и звуки</div>
+                    <div class="settings-item">🔒 Конфиденциальность</div>
+                    <div class="settings-item">🎨 Оформление чатов</div>
+                </div>
+                <div id="profileScreen" class="app-screen">
+                    <div class="screen-title">Мой профиль</div>
+                    <div style="text-align: center; padding: 20px 0;">
+                        <div class="chat-avatar" style="width: 80px; height: 80px; margin: 0 auto 12px; font-size: 24px;">ME</div>
+                        <h3>Разработчик Blist</h3>
+                        <p style="color: #9ca3af; font-size: 14px; margin-top: 4px;">@blist_dev</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav-container">
+                <div class="bottom-nav-bubble">
+                    <button class="nav-item active" data-screen="chatsScreen"><span class="nav-icon">💬</span><span>Чаты</span></button>
+                    <button class="nav-item" data-screen="contactsScreen"><span class="nav-icon">📖</span><span>Контакты</span></button>
+                    <button class="nav-item" data-screen="settingsScreen"><span class="nav-icon">⚙️</span><span>Настройки</span></button>
+                    <button class="nav-item" data-screen="profileScreen"><span class="nav-icon">👤</span><span>Профиль</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="chat-view">
+            <div id="chatPlaceholder" class="chat-placeholder"><div class="placeholder-bubble">Выберите чат, чтобы начать общение</div></div>
+            <div id="chatMainWindow" class="chat-main-window">
+                <div class="chat-view-header">
+                    <div class="header-avatar" id="activeChatAvatar">АП</div>
+                    <div class="header-user-info"><div class="header-name" id="activeChatName">Александр Петров</div><div class="header-status">в сети</div></div>
+                </div>
+                <div class="chat-messages-area" id="chatMessages"></div>
+                
+                <div class="chat-view-footer">
+                    <input type="file" id="fileAttachInput" style="display: none;">
+                    <button class="action-icon-btn" id="attachFileBtn" title="Прикрепить файл">📎</button>
+                    <button class="action-icon-btn" id="emojiToggleBtn" title="Смайлики">😀</button>
+                    
+                    <div class="emoji-picker" id="emojiPicker">
+                        <button class="emoji-btn">😀</button><button class="emoji-btn">😂</button>
+                        <button class="emoji-btn">🥰</button><button class="emoji-btn">👍</button>
+                        <button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
+                        <button class="emoji-btn">😎</button><button class="emoji-btn">🤔</button>
+                        <button class="emoji-btn">👀</button><button class="emoji-btn">😱</button>
+                        <button class="emoji-btn">💩</button><button class="emoji-btn">🚀</button>
+                    </div>
+                    
+                    <input type="text" class="message-input" id="messageInputField" placeholder="Напишите сообщение...">
+                    <button class="send-btn" id="sendMessageBtn">➔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+        const chatHistory = {
+            "Александр Петров": [
+                { type: "incoming", isHTML: false, text: "Привет! Как продвигается разработка мессенджера?" },
+                { type: "outgoing", isHTML: false, text: "Привет! Почти закончила базовую структуру сайдбара и навигации." },
+                { type: "incoming", isHTML: false, text: "Привет! Проект Blist готов к запуску?" }
+            ],
+            "Дизайн-команда": [
+                { type: "incoming", isHTML: false, text: "Всем привет! Мы обновили UI-кит проекта." },
+                { type: "outgoing", isHTML: false, text: "Отлично, сейчас посмотрю." },
+                { type: "incoming", isHTML: false, text: "Выслали новые макеты для страницы профиля" }
+            ],
+            "Иван Иванов": [
+                { type: "incoming", isHTML: false, text: "Привет, есть минутка обсудить код?" },
+                { type: "outgoing", isHTML: false, text: "Да, давай созвонимся." },
+                { type: "incoming", isHTML: false, text: "Договорились, созвонимся позже." }
+            ]
+        };
+
+        let currentChatId = null;
+        const navButtons = document.querySelectorAll('.nav-item');
+        const appScreens = document.querySelectorAll('.app-screen');
+        const searchInput = document.querySelector('.search-input');
+        const searchClearBtn = document.getElementById('searchClearBtn');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelector('.nav-item.active').classList.remove('active');
+                button.classList.add('active');
+                appScreens.forEach(screen => { screen.classList.remove('screen-active'); });
+                const targetScreenId = button.getAttribute('data-screen');
+                document.getElementById(targetScreenId).classList.add('screen-active');
+                searchInput.value = '';
+                handleSearch('');
+            });
+        });
+
+        function renderMessages(chatId) {
+            const messagesArea = document.getElementById('chatMessages');
+            messagesArea.innerHTML = '';
+            if (chatHistory[chatId]) {
+                chatHistory[chatId].forEach(msg => {
+                    const msgBubble = document.createElement('div');
+                    msgBubble.className = `message-bubble ${msg.type}`;
+                    // Если это файл или фото (HTML код), рендерим через innerHTML, иначе через innerText защищаем текст
+                    if (msg.isHTML) {
+                        msgBubble.innerHTML = msg.text;
+                    } else {
+                        msgBubble.innerText = msg.text;
+                    }
+                    messagesArea.appendChild(msgBubble);
+                });
+            }
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function initChatClickListeners() {
+            const allChatItems = document.querySelectorAll('.chat-item[data-username]');
+            const placeholder = document.getElementById('chatPlaceholder');
+            const mainWindow = document.getElementById('chatMainWindow');
+            const activeAvatar = document.getElementById('activeChatAvatar');
+            const activeName = document.getElementById('activeChatName');
+
+            allChatItems.forEach(item => { item.replaceWith(item.cloneNode(true)); });
+
+            document.querySelectorAll('.chat-item[data-username]').forEach(item => {
+                item.addEventListener('click', () => {
+                    const chatId = item.getAttribute('data-username');
+                    currentChatId = chatId;
+                    document.querySelectorAll('.chat-item[data-username]').forEach(i => {
+                        if(i.getAttribute('data-username') === chatId) i.classList.add('active');
+                        else i.classList.remove('active');
+                    });
+                    placeholder.style.display = 'none';
+                    mainWindow.classList.add('active');
+                    activeName.innerText = chatId;
+                    activeAvatar.innerText = item.getAttribute('data-avatar');
+                    activeAvatar.style.color = item.getAttribute('data-color');
+                    renderMessages(chatId);
+                    const badge = item.querySelector('.chat-badge');
+                    if (badge) badge.remove();
+                    document.getElementById('emojiPicker').classList.remove('show');
+                });
+            });
+        }
+                initChatClickListeners();
+
+        const chatsScreen = document.getElementById('chatsScreen');
+        const searchResultsScreen = document.createElement('div');
+        searchResultsScreen.id = 'searchResultsScreen';
+        searchResultsScreen.className = 'app-screen';
+        chatsScreen.parentNode.appendChild(searchResultsScreen);
+
+        function handleSearch(query) {
+            const cleanQuery = query.trim().toLowerCase();
+            const originalChats = chatsScreen.querySelectorAll('.chat-item');
+            if (cleanQuery === '') {
+                searchClearBtn.style.display = 'none';
+                searchResultsScreen.classList.remove('screen-active');
+                if (document.querySelector('.nav-item[data-screen="chatsScreen"]').classList.contains('active')) { chatsScreen.classList.add('screen-active'); }
+                document.querySelectorAll('#chatsScreen .chat-item[data-username]').forEach(i => {
+                    if(i.getAttribute('data-username') === currentChatId) i.classList.add('active');
+                    else i.classList.remove('active');
+                });
+                return;
+            }
+            searchClearBtn.style.display = 'flex';
+            chatsScreen.classList.remove('screen-active');
+            searchResultsScreen.classList.add('screen-active');
+            searchResultsScreen.innerHTML = ''; 
+            let foundByNames = []; let foundByMessages = [];
+            originalChats.forEach(chat => {
+                const name = chat.getAttribute('data-username').toLowerCase();
+                const lastMsg = chat.querySelector('.chat-last-message').innerText.toLowerCase();
+                const chatClone = chat.cloneNode(true);
+                if (chat.getAttribute('data-username') !== currentChatId) { chatClone.classList.remove('active'); } else { chatClone.classList.add('active'); }
+                if (name.includes(cleanQuery)) { foundByNames.push(chatClone); } else if (lastMsg.includes(cleanQuery)) { foundByMessages.push(chatClone); }
+            });
+            if (foundByNames.length === 0 && foundByMessages.length === 0) { searchResultsScreen.innerHTML = '<div class="no-results">Ничего не найдено 🔍</div>'; return; }
+            if (foundByNames.length > 0) {
+                const nameDivider = document.createElement('div'); nameDivider.className = 'search-divider'; nameDivider.innerText = 'По названию чата'; searchResultsScreen.appendChild(nameDivider);
+                foundByNames.forEach(item => searchResultsScreen.appendChild(item));
+            }
+            if (foundByMessages.length > 0) {
+                const msgDivider = document.createElement('div'); msgDivider.className = 'search-divider'; msgDivider.innerText = 'По тексту сообщений'; msgDivider.style.marginTop = '10px'; searchResultsScreen.appendChild(msgDivider);
+                foundByMessages.forEach(item => searchResultsScreen.appendChild(item));
+            }
+            initChatClickListeners();
+        }
+
+        searchInput.addEventListener('input', (e) => { handleSearch(e.target.value); });
+        searchClearBtn.addEventListener('click', () => { searchInput.value = ''; handleSearch(''); searchInput.focus(); });
+
+        const sendBtn = document.getElementById('sendMessageBtn');
+        const msgInput = document.getElementById('messageInputField');
+        const emojiToggleBtn = document.getElementById('emojiToggleBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const attachFileBtn = document.getElementById('attachFileBtn');
+        const fileAttachInput = document.getElementById('fileAttachInput');
+
+        emojiToggleBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPicker.classList.toggle('show'); });
+
+        document.querySelectorAll('.emoji-btn').forEach(btn => {
+            btn.addEventListener('click', () => { msgInput.value += btn.innerText; msgInput.focus(); });
+        });
+
+        document.addEventListener('click', () => { emojiPicker.classList.remove('show'); });
+        emojiPicker.addEventListener('click', (e) => { e.stopPropagation(); });
+
+        attachFileBtn.addEventListener('click', () => { fileAttachInput.click(); });
+
+        // Исправленная и полностью рабочая логика чтения реальных файлов
+        fileAttachInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const selectedFile = e.target.files[0]; // Исправлено на [0]
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    if (selectedFile.type.startsWith('image/')) {
+                        // Для картинок сохраняем тег img
+                        sendOutgoingMessage(true, `<img src="${event.target.result}" class="message-media" alt="photo">`, `📷 Фотография`);
+                    } else {
+                        // Для обычных файлов делаем красивую карточку
+                        const sizeKB = (selectedFile.size / 1024).toFixed(1);
+                        sendOutgoingMessage(true, `
+                            <div class="message-file-block">
+                                <span class="file-icon">📄</span>
+                                <div class="file-meta">
+                                    <span class="file-name">${selectedFile.name}</span>
+                                    <span class="file-size">${sizeKB} КБ</span>
+                                </div>
+                            </div>
+                        `, `📄 ${selectedFile.name}`);
+                    }
+                };
+
+                reader.readAsDataURL(selectedFile);
+                fileAttachInput.value = ''; 
+            }
+        });
+
+        function sendOutgoingMessage(isHTML, content, sidebarText) {
+            if (!chatHistory[currentChatId]) { chatHistory[currentChatId] = []; }
+            chatHistory[currentChatId].push({ type: "outgoing", isHTML: isHTML, text: content });
+            document.querySelectorAll(`.chat-item[data-username="${currentChatId}"]`).forEach(item => {
+                item.querySelector('.chat-last-message').innerText = sidebarText;
+                item.querySelector('.chat-time').innerText = "Сейчас";
+            });
+            renderMessages(currentChatId);
+        }
+
+        function sendMessage() {
+            const text = msgInput.value.trim();
+            if (text !== '' && currentChatId) {
+                sendOutgoingMessage(false, text, text);
+                msgInput.value = ''; 
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        msgInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    </script>
+</body>
+</html>

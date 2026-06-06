@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0f19;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #f0f4f8;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .brand img {
+            width: 256px;
+            height: 256px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #60a5fa;
+            letter-spacing: 1px;
+        }
+
+        .register-card {
+            background: #111827;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1f2937;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #60a5fa;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #111827;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        input::placeholder {
+            color: #4b5563;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 6px;
+            min-height: 18px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .login-link a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .login-link a:hover {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="brand">
+            <img src="https://sun9-10.userapi.com/s/v1/ig2/CA7Oe8uekixg-HGqvlOntSUbuYkRZuEyhEmoyJ6kuH5PuSs6vVvMN9T-4RT0MF2dCfPSxnuomoviPUO3cxmuj64y.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1024x1024&from=bu&u=UBrDe4KqI9XXEnUz5elBKt6jeTndCSZ_5mdTq-OK2Kc&cs=1024x0" alt="Blist Logo">
+            <span class="brand-name">Blist</span>
+        </div>
+
+        <div class="register-card"> 
+            <h2>Регистрация</h2> 
+            <div class="subtitle">Создайте новый аккаунт</div> 
+            
+            <form id="registerForm"> 
+                <div class="input-group"> 
+                    <label for="username">Имя пользователя</label> 
+                    <input type="text" id="username" placeholder="Введите имя"> 
+                    <div class="error" id="usernameError"></div> 
+                </div> 
+                
+                <div class="input-group"> 
+                    <label for="email">Email</label> 
+                    <input type="email" id="email" placeholder="example@mail.com"> 
+                    <div class="error" id="emailError"></div> 
+                </div> 
+                
+                <div class="input-group"> 
+                    <label for="password">Пароль</label> 
+                    <input type="password" id="password" placeholder="Минимум 6 символов"> 
+                    <div class="error" id="passwordError"></div> 
+                </div>
+                
+                <div class="input-group"> 
+                    <label for="confirmPassword">Подтверждение пароля</label> 
+                    <input type="password" id="confirmPassword" placeholder="Повторите пароль"> 
+                    <div class="error" id="confirmError"></div> 
+                </div> 
+                
+                <button type="submit">Зарегистрироваться</button> 
+            </form> 
+            
+            <div class="login-link"> 
+                Уже есть аккаунт? 
+                <a href="login.html" id="loginLink">Войти</a> 
+            </div> 
+        </div> 
+    </div>
+
+</body>
+</html>
