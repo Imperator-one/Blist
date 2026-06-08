@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои контакты</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            padding: 20px;
+        }
+        .contacts-card {
+            background-color: white;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .contacts-card h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .contacts-list {
+            list-style: none; /* Убираем точки у списка */
+            padding: 0;
+        }
+        .contacts-list li {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e9f0ef;
+            border-radius: 5px;
+        }
+        .contacts-list a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .contacts-list a:hover {
+            color: #16a085;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contacts-card">
+        <h2>Контакты</h2>
+        <ul class="contacts-list">
+            <li>
+                Телефон: <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>
